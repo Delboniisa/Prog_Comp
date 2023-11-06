@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+//vou salvar como biblioteca, para passar as informações como ponteiro ao menu principal
+
 struct cadastro{
 	int dia, mes, ano, idade;
 	long int cpf; 
