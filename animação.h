@@ -30,8 +30,8 @@ void animar(){
 		printf("|                                                                                   |\n");
 
 		
-		sleep(1);
-		system("cls");
+		sleep(1); // velocidade da mudança dos corações
+		system("cls"); // é para apagar os printf a cima para executar o próximo
 		
 		printf("|                                                                                   |\n");	
 		printf("|                                                                                   |\n");
@@ -60,4 +60,3 @@ void animar(){
 int main(){
 		animar();
 }
-
