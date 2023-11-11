@@ -9,7 +9,7 @@
 
 #define ESC 27
 
-int salvarCadastro(struct cadastro* cadastro);
+int salvarCadastro(struct cadastro* cadastro);58
 
 
 	int main(){
