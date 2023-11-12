@@ -14,7 +14,7 @@ void exibirPerfil(struct cadastro *cadastro);
 void alterarCadastro(struct cadastro *cadastro);
 
 
-	int main(){
+int main(){
 		
 		setlocale(LC_ALL, "Portuguese");
 		
@@ -25,7 +25,7 @@ void alterarCadastro(struct cadastro *cadastro);
 			
 		animar();
 			
-		while(menu1!=ESC){
+		while(opcaoMenuPrincipal!=ESC){
 			printf("\n\n\n");
 			printf("\n\t*************************************************************");
 			printf("\n\t*                          NOME                             *");				
@@ -59,9 +59,10 @@ void alterarCadastro(struct cadastro *cadastro);
 		        case 3:
 		            alterarCadastro();
 		            break;
-		        }
+		    }
 		}
-	}
+}
+
 	void cadastrarNovoPerfil()
 {
     	printf("\n\n\n");
@@ -168,134 +169,159 @@ void exibirPerfil()
 
 void alterarCadastro()
 {
-	
-	int menuAlteracao, menuAltCadastro, menuAltPerfil;
-	
-	printf("\n\n\n");
-	printf("\n\t*************************************************************");
-	printf("\n\t*                          NOME                             *");				
-	printf("\n\t*                                                           *");
-	printf("\n\t*                                                           *");
-	printf("\n\t*                      * ALTERAÇÂO *                        *");
-	printf("\n\t*                                                           *");
-	printf("\n\t*                                                           *");
-	printf("\n\t*                      1 - CADASTRO:                        *");
-	printf("\n\t*                      2 - PERFIL:                          *");
-	printf("\n\t*                                                           *");
-	printf("\n\t*                                                           *");
-	printf("\n\t*************************************************************");
-	
-	scanf("%d", &menuAlteracao);
-	
-	if(menuAlteracao== 1 || 2 || ESC){
-		
-		switch(menuAlteracao){
-			case 1: 
-			
-				printf("\n\n\n");
-				printf("\n\t*************************************************************");
-				printf("\n\t*                          NOME                             *");				
-				printf("\n\t*                                                           *");
-				printf("\n\t*                                                           *");
-				printf("\n\t*               * ALTERAÇÂO DE CADASTRO *                   *");
-				printf("\n\t*                                                           *");
-				printf("\n\t*                                                           *");
-				printf("\n\t*************************************************************");
-															
-				sleep(3);
-				system("cls");
-															
-				printf("\n QUAL DOS ITENS DESEJA ALTERAR: ");
-				printf("\n 1 - NOME: %s", cadastro.nome);
-				printf("\n 2 - EMAIL: %s", cadastro.email);
-				printf("\n 3 - DATA DE NASCIMENTO: %d / %d / %d", cadastro.dia, cadastro.mes, cadastro.ano);
-				printf("\n 4 - TELEFONE: %d  %d", cadastro.telefone.ddd, cadastro.telefone.numero);
-				printf("\n 5 - CPF: %d", cadastro.cpf);
-									
-				scanf("%d", &menu3);
-								
-				switch(menuAltCadastro){
-					case 1: printf("\n DIGITE O NOVO NOME: ");
-						gets(cadastro.nome);
-						fflush(stdin);
-																
-					case 2: printf("\n DIGITE O NOVO EMAIL: ");
-						gets(cadastro.email);
-						fflush(stdin);
-																
-					case 3: printf("\n DIGITE A NOVA DATA DE NASCIMENTO: ");
-						printf("\n DIA: ");
-						scanf("%d", &cadastro.dia);
-						printf("\n MÊS: ");
-						scanf("%d", &cadastro.mes);
-						printf("\n ANO: ");
-						scanf("%d", &cadastro.ano);
-																
-					case 4: printf("\n DIGITE O NOVO TELEFONE: ");
-						printf("\n NOVO DDD: ");
-						scanf("%d", &cadastro.telefone.ddd);
-						printf("\n NOVO NÚMERO: ");
-						scanf("%d", &cadastro.telefone.numero);
-																
-					case 5: printf("\n DIGITE O NOVO CPF: ");
-						scanf("%d", &cadastro.cpf);	
-				}
-				
-			case 2:
-				printf("\n\n\n");
-				printf("\n\t*************************************************************");
-				printf("\n\t*                          NOME                             *");				
-				printf("\n\t*                                                           *");
-				printf("\n\t*                                                           *");
-				printf("\n\t*                 * ALTERAÇÂO DE PERFIL *                   *");
-				printf("\n\t*                                                           *");
-				printf("\n\t*                                                           *");
-				printf("\n\t*************************************************************");
-															
-				sleep(3);
-				system("cls");
-															
-				printf("\n QUAL DOS ITENS DESEJA ALTERAR: ");
-				printf("\n 1 - APELIDO: %s ", cadastro.descricao.apelido);
-				printf("\n 2 - GENÊRO F/M: %c ", cadastro.descricao.genero);
-				printf("\n 3 - SEXUALIDE: %s ", cadastro.descricao.sexualidade);
-				printf("\n 4 - GOSTOS GERAIS: %s ", cadastro.descricao.gosto_gerais);
-				printf("\n 5 - DESCRIÇÃO: %s ", cadastro.descricao.descricao);
-				
-				
-				switch(menuAltPerfil){
-				    case 1:
-						printf("\n NOVO APELIDO: ");
-						gets(cadastro.descricao.apelido);
-						fflush(stdin);
-					
-					case 2:
-						printf("\n NOVO GENÊRO F/M: ");
-						gets(cadastro.descricao.genero);
-						fflush(stdin);
-					
-					case 3:
-						printf("\n NOVA SEXUALIDADE: ");
-						gets(cadastro.descricao.sexualidade);
-						fflush(stdin);
-					
-					case 4:
-						printf("\n NOVO GOSTOS GERAIS: ");
-						gets(cadastro.descricao.gosto_gerais);
-						fflush(stdin);
-					
-					case 5:
-						printf("\n NOVA DESCRIÇÃO: ");
-						gets(cadastro.descricao.descricao);
-						fflush(stdin);
-					
-		}
-		
-	}
-	else{
-		printf("\n NÚMERO INVÁLIDO! \n");
-		
-		return alterarCadastro();
-	}
-	
+    int menuAlteracao, menuAltCadastro, menuAltPerfil, menu3;
+
+    printf("\n\n\n");
+    printf("\n\t*********************");
+    printf("\n\t*                          NOME                             *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                      * ALTERAÇÂO *                        *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                      1 - CADASTRO:                        *");
+    printf("\n\t*                      2 - PERFIL:                          *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*********************");
+
+    scanf("%d", &menuAlteracao);
+
+    if (menuAlteracao == 1 || menuAlteracao == 2 || menuAlteracao == ESC) {
+
+        switch (menuAlteracao) {
+            case 1:
+
+                printf("\n\n\n");
+                printf("\n\t*********************");
+                printf("\n\t*                          NOME                             *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*               * ALTERAÇÂO DE CADASTRO *                   *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*********************");
+
+                sleep(3);
+                system("cls");
+
+                printf("\n QUAL DOS ITENS DESEJA ALTERAR: ");
+                printf("\n 1 - NOME: %s", cadastro.nome);
+                printf("\n 2 - EMAIL: %s", cadastro.email);
+                printf("\n 3 - DATA DE NASCIMENTO: %d / %d / %d", cadastro.dia, cadastro.mes, cadastro.ano);
+                printf("\n 4 - TELEFONE: %d  %d", cadastro.telefone.ddd, cadastro.telefone.numero);
+                printf("\n 5 - CPF: %d", cadastro.cpf);
+
+                scanf("%d", &menu3);
+
+                switch (menuAltCadastro) {
+                    case 1:
+                        printf("\n DIGITE O NOVO NOME: ");
+                        gets(cadastro.nome);
+                        fflush(stdin);
+                        break;
+
+                    case 2:
+                        printf("\n DIGITE O NOVO EMAIL: ");
+                        gets(cadastro.email);
+                        fflush(stdin);
+                        break;
+
+                    case 3:
+                        printf("\n DIGITE A NOVA DATA DE NASCIMENTO: ");
+                        printf("\n DIA: ");
+                        scanf("%d", &cadastro.dia);
+                        printf("\n MÊS: ");
+                        scanf("%d", &cadastro.mes);
+                        printf("\n ANO: ");
+                        scanf("%d", &cadastro.ano);
+                        break;
+
+                    case 4:
+                        printf("\n DIGITE O NOVO TELEFONE: ");
+                        printf("\n NOVO DDD: ");
+                        scanf("%d", &cadastro.telefone.ddd);
+                        printf("\n NOVO NÚMERO: ");
+                        scanf("%d", &cadastro.telefone.numero);
+                        break;
+
+                    case 5:
+                        printf("\n DIGITE O NOVO CPF: ");
+                        scanf("%d", &cadastro.cpf);
+                        break;
+
+                    default:
+                        printf("\n NÚMERO INVÁLIDO!\n");
+                        return alterarCadastro();
+                }
+                break;
+
+            case 2:
+                printf("\n\n\n");
+                printf("\n\t*********************");
+                printf("\n\t*                          NOME                             *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*                 * ALTERAÇÂO DE PERFIL *                   *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*                                                           *");
+                printf("\n\t*********************");
+
+                sleep(3);
+                system("cls");
+
+                printf("\n QUAL DOS ITENS DESEJA ALTERAR: ");
+                printf("\n 1 - APELIDO: %s ", cadastro.descricao.apelido);
+                printf("\n 2 - GENÊRO F/M: %c ", cadastro.descricao.genero);
+                printf("\n 3 - SEXUALIDADE: %s ", cadastro.descricao.sexualidade);
+                printf("\n 4 - GOSTOS GERAIS: %s ", cadastro.descricao.gosto_gerais);
+                printf("\n 5 - DESCRIÇÃO: %s ", cadastro.descricao.descricao);
+
+                scanf("%d", &menuAltPerfil);
+
+                switch (menuAltPerfil) {
+                    case 1:
+                        printf("\n NOVO APELIDO: ");
+                        gets(cadastro.descricao.apelido);
+                        fflush(stdin);
+                        break;
+
+                    case 2:
+                        printf("\n NOVO GENÊRO F/M: ");
+                        scanf(" %c", &cadastro.descricao.genero);
+                        fflush(stdin);
+                        break;
+
+                    case 3:
+                        printf("\n NOVA SEXUALIDADE: ");
+                        gets(cadastro.descricao.sexualidade);
+                        fflush(stdin);
+                        break;
+
+                    case 4:
+                        printf("\n NOVO GOSTOS GERAIS: ");
+                        gets(cadastro.descricao.gosto_gerais);
+                        fflush(stdin);
+                        break;
+
+                    case 5:
+                        printf("\n NOVA DESCRIÇÃO: ");
+                        gets(cadastro.descricao.descricao);
+                        fflush(stdin);
+                        break;
+
+                    default:
+                        printf("\n NÚMERO INVÁLIDO!\n");
+                        return alterarCadastro();
+                }
+                break;
+
+            default:
+                printf("\n NÚMERO INVÁLIDO!\n");
+                return alterarCadastro();
+        }
+    } else {
+        printf("\n NÚMERO INVÁLIDO!\n");
+        return alterarCadastro();
+    }
 }
