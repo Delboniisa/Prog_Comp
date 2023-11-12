@@ -8,7 +8,7 @@
 #include <unistd.h>
 #endif
 
-// Estrutura para armazenar informaÁıes do cadastro
+// Estrutura para armazenar informa√ß√µes do cadastro
 struct Cadastro {
     char cpf[15];
     char primeiroNome[50];
@@ -17,42 +17,40 @@ struct Cadastro {
     char genero[20];
     char sexualidade[20];
     char email[50];
-    char redesSociais[50];
     char telefone[15];
     char sobre[200];
-    char identidadeGenero[50];
-    // Adicione outros campos conforme necess·rio
+    char personalidade[50]; // Novo campo "Personalidade"
+    // Adicione outros campos conforme necess√°rio
 };
 
-// FunÁ„o para verificar se um CPF j· existe no arquivo
+// Fun√ß√£o para verificar se um CPF j√° existe no arquivo
 int cpfExistente(FILE *arquivo, const char *cpf) {
     struct Cadastro cadastro;
 
-    rewind(arquivo); // Voltar ao inÌcio do arquivo
+    rewind(arquivo); // Voltar ao in√≠cio do arquivo
 
-    // Percorrer o arquivo e verificar se o CPF j· existe
-    while (fscanf(arquivo, "%14[^;];%*[^;];%*[^;];%*[^;];%*[^;];%*[^;];%49[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
-                   cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
-                   cadastro.apelido, cadastro.genero, cadastro.sexualidade,
-                   cadastro.email, cadastro.redesSociais,
-                   cadastro.telefone, cadastro.sobre, cadastro.identidadeGenero) != EOF) {
+    // Percorrer o arquivo e verificar se o CPF j√° existe
+    while (fscanf(arquivo, "%14[^;];%49[^;];%49[^;];%49[^;];%19[^;];%19[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
+               cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
+               cadastro.apelido, cadastro.genero, cadastro.sexualidade,
+               cadastro.email, cadastro.telefone, cadastro.sobre, cadastro.personalidade) != EOF) {
         if (strcmp(cadastro.cpf, cpf) == 0) {
-            // CPF encontrado, retorna verdadeiro
-            return 1;
+            return 1; // CPF encontrado, retorna verdadeiro
         }
     }
 
-    // CPF n„o encontrado, retorna falso
-    return 0;
+    return 0; // CPF n√£o encontrado, retorna falso
 }
 
-// FunÁ„o para adicionar um novo cadastro ao arquivo
+// Fun√ß√£o para adicionar um novo cadastro ao arquivo
 void adicionarCadastro(FILE *arquivo, struct Cadastro novoCadastro) {
-    fprintf(arquivo, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+    fseek(arquivo, 0, SEEK_END); // Posicionar o ponteiro no final do arquivo
+
+    fprintf(arquivo, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
             novoCadastro.cpf, novoCadastro.primeiroNome, novoCadastro.restoNome,
             novoCadastro.apelido, novoCadastro.genero, novoCadastro.sexualidade,
-            novoCadastro.email, novoCadastro.redesSociais,
-            novoCadastro.telefone, novoCadastro.sobre, novoCadastro.identidadeGenero);
+            novoCadastro.email, novoCadastro.telefone, novoCadastro.sobre,
+            novoCadastro.personalidade); // Adicionado campo "Personalidade"
 
     printf("Cadastro adicionado com sucesso!\n");
 
@@ -64,7 +62,7 @@ void adicionarCadastro(FILE *arquivo, struct Cadastro novoCadastro) {
     #endif
 }
 
-// FunÁ„o para buscar e exibir todos os cadastros com um determinado CPF
+// Fun√ß√£o para buscar e exibir todos os cadastros com um determinado CPF
 void buscarCadastro(FILE *arquivo, const char *cpf) {
     struct Cadastro cadastro;
     int encontrados = 0;
@@ -72,59 +70,57 @@ void buscarCadastro(FILE *arquivo, const char *cpf) {
     // Limpar a tela antes de exibir o resultado da busca
     system("cls || clear");
 
-    rewind(arquivo); // Voltar ao inÌcio do arquivo
+    rewind(arquivo); // Voltar ao in√≠cio do arquivo
 
     // Percorrer o arquivo e procurar pelo CPF
-    while (fscanf(arquivo, "%14[^;];%49[^;];%49[^;];%49[^;];%19[^;];%19[^;];%49[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
-                   cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
-                   cadastro.apelido, cadastro.genero, cadastro.sexualidade,
-                   cadastro.email, cadastro.redesSociais,
-                   cadastro.telefone, cadastro.sobre, cadastro.identidadeGenero) != EOF) {
+    while (fscanf(arquivo, "%14[^;];%49[^;];%49[^;];%49[^;];%19[^;];%19[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
+               cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
+               cadastro.apelido, cadastro.genero, cadastro.sexualidade,
+               cadastro.email, cadastro.telefone, cadastro.sobre, cadastro.personalidade) != EOF) {
         if (strcmp(cadastro.cpf, cpf) == 0) {
-            // Cadastro encontrado, exibir informaÁıes
+            // Cadastro encontrado, exibir informa√ß√µes
             printf("CPF: %s\n", cadastro.cpf);
             printf("Primeiro Nome: %s\n", cadastro.primeiroNome);
             printf("Resto do Nome: %s\n", cadastro.restoNome);
             printf("Apelido: %s\n", cadastro.apelido);
-            printf("GÍnero: %s\n", cadastro.genero);
+            printf("G√™nero: %s\n", cadastro.genero);
             printf("Sexualidade: %s\n", cadastro.sexualidade);
             printf("E-mail: %s\n", cadastro.email);
-            printf("Redes Sociais: %s\n", cadastro.redesSociais);
             printf("Telefone: %s\n", cadastro.telefone);
             printf("Sobre: %s\n", cadastro.sobre);
-            printf("Identidade de GÍnero: %s\n", cadastro.identidadeGenero);
-            printf("\n");
+            printf("Personalidade: %s\n", cadastro.personalidade); // Novo campo "Personalidade"
             encontrados++;
         }
     }
 
-    // Se o CPF n„o for encontrado
+    // Se o CPF n√£o for encontrado
     if (encontrados == 0) {
-        printf("Cadastro com CPF %s n„o encontrado.\n", cpf);
+        printf("Cadastro com CPF %s n√£o encontrado.\n", cpf);
     }
 }
 
-// FunÁ„o para editar os dados de um cadastro
+// Fun√ß√£o para editar os dados de um cadastro
 void editarCadastro(FILE *arquivo, const char *cpf) {
     struct Cadastro cadastro;
 
-    // Abrir um arquivo tempor·rio
+    // Abrir um arquivo tempor√°rio
     FILE *tempFile = fopen("temp.txt", "w");
     if (tempFile == NULL) {
-        printf("Erro ao criar arquivo tempor·rio.\n");
+        printf("Erro ao criar arquivo tempor√°rio.\n");
         exit(1);
     }
 
-    rewind(arquivo); // Voltar ao inÌcio do arquivo
+    rewind(arquivo); // Voltar ao in√≠cio do arquivo
 
-    // Percorrer o arquivo e copiar os dados para o arquivo tempor·rio
-    while (fscanf(arquivo, "%14[^;];%49[^;];%49[^;];%49[^;];%19[^;];%19[^;];%49[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
-                   cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
-                   cadastro.apelido, cadastro.genero, cadastro.sexualidade,
-                   cadastro.email, cadastro.redesSociais,
-                   cadastro.telefone, cadastro.sobre, cadastro.identidadeGenero) != EOF) {
+    // Percorrer o arquivo e copiar os dados para o arquivo tempor√°rio
+    while (fscanf(arquivo, "%14[^;];%49[^;];%49[^;];%49[^;];%19[^;];%19[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
+               cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
+               cadastro.apelido, cadastro.genero, cadastro.sexualidade,
+               cadastro.email, cadastro.telefone, cadastro.sobre, cadastro.personalidade) != EOF) {
         if (strcmp(cadastro.cpf, cpf) == 0) {
-            // Cadastro encontrado, permitir ediÁ„o
+            // Limpar a tela antes de exibir o resultado da busca
+            system("cls || clear");
+            // Cadastro encontrado, permitir edi√ß√£o
             printf("Editando dados do cadastro com CPF %s\n", cpf);
             printf("Novo Primeiro Nome: ");
             scanf(" %49[^\n]s", cadastro.primeiroNome);
@@ -132,40 +128,83 @@ void editarCadastro(FILE *arquivo, const char *cpf) {
             scanf(" %49[^\n]s", cadastro.restoNome);
             printf("Novo Apelido: ");
             scanf(" %49[^\n]s", cadastro.apelido);
-            printf("Novo GÍnero: ");
+            printf("Novo G√™nero: ");
             scanf(" %19[^\n]s", cadastro.genero);
             printf("Nova Sexualidade: ");
             scanf(" %19[^\n]s", cadastro.sexualidade);
             printf("Novo E-mail: ");
             scanf(" %49[^\n]s", cadastro.email);
-            printf("Novas Redes Sociais: ");
-            scanf(" %49[^\n]s", cadastro.redesSociais);
             printf("Novo Telefone: ");
             scanf(" %14[^\n]s", cadastro.telefone);
             printf("Novo Sobre: ");
             scanf(" %199[^\n]s", cadastro.sobre);
-            printf("Nova Identidade de GÍnero: ");
-            scanf(" %49[^\n]s", cadastro.identidadeGenero);
+            printf("Nova Personalidade: ");
+            scanf(" %49[^\n]s", cadastro.personalidade); // Novo campo "Personalidade"
         }
 
-        // Escrever no arquivo tempor·rio
-        fprintf(tempFile, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+        // Escrever no arquivo tempor√°rio
+        fprintf(tempFile, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                 cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
                 cadastro.apelido, cadastro.genero, cadastro.sexualidade,
-                cadastro.email, cadastro.redesSociais,
-                cadastro.telefone, cadastro.sobre, cadastro.identidadeGenero);
+                cadastro.email, cadastro.telefone, cadastro.sobre, cadastro.personalidade); // Novo campo "Personalidade"
     }
 
     fclose(arquivo);  // Fechar o arquivo original
-    fclose(tempFile);  // Fechar o arquivo tempor·rio
+    fclose(tempFile);  // Fechar o arquivo tempor√°rio
 
     // Remover o arquivo original
     remove("cadastros.txt");
 
-    // Renomear o arquivo tempor·rio para o nome original
+    // Renomear o arquivo tempor√°rio para o nome original
     rename("temp.txt", "cadastros.txt");
 
     printf("Cadastro editado com sucesso!\n");
+
+    // Adicionar delay de 1 segundo
+    #ifdef _WIN32
+    Sleep(1000);  // Em milissegundos
+    #else
+    sleep(1);  // Em segundos
+    #endif
+}
+
+// Fun√ß√£o para excluir um cadastro com base no CPF
+void excluirCadastro(FILE *arquivo, const char *cpf) {
+    struct Cadastro cadastro;
+
+    // Abrir um arquivo tempor√°rio
+    FILE *tempFile = fopen("temp.txt", "w");
+    if (tempFile == NULL) {
+        printf("Erro ao criar arquivo tempor√°rio.\n");
+        exit(1);
+    }
+
+    rewind(arquivo); // Voltar ao in√≠cio do arquivo
+
+    // Percorrer o arquivo e copiar os dados para o arquivo tempor√°rio, exceto o cadastro a ser exclu√≠do
+    while (fscanf(arquivo, "%14[^;];%49[^;];%49[^;];%49[^;];%19[^;];%19[^;];%49[^;];%14[^;];%199[^;];%49[^\n]\n",
+               cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
+               cadastro.apelido, cadastro.genero, cadastro.sexualidade,
+               cadastro.email, cadastro.telefone, cadastro.sobre, cadastro.personalidade) != EOF) {
+        if (strcmp(cadastro.cpf, cpf) != 0) {
+            // Escrever no arquivo tempor√°rio
+            fprintf(tempFile, "%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                    cadastro.cpf, cadastro.primeiroNome, cadastro.restoNome,
+                    cadastro.apelido, cadastro.genero, cadastro.sexualidade,
+                    cadastro.email, cadastro.telefone, cadastro.sobre, cadastro.personalidade); // Novo campo "Personalidade"
+        }
+    }
+
+    fclose(arquivo);  // Fechar o arquivo original
+    fclose(tempFile);  // Fechar o arquivo tempor√°rio
+
+    // Remover o arquivo original
+    remove("cadastros.txt");
+
+    // Renomear o arquivo tempor√°rio para o nome original
+    rename("temp.txt", "cadastros.txt");
+
+    printf("Cadastro exclu√≠do com sucesso!\n");
 
     // Adicionar delay de 1 segundo
     #ifdef _WIN32
@@ -179,7 +218,7 @@ int main() {
     FILE *arquivo;
     struct Cadastro novoCadastro;
 
-    // Abrir o arquivo no modo de leitura e gravaÁ„o
+    // Abrir o arquivo no modo de leitura e grava√ß√£o
     arquivo = fopen("cadastros.txt", "r+");
     if (arquivo == NULL) {
         printf("Erro ao abrir o arquivo.\n");
@@ -193,15 +232,15 @@ int main() {
 
         // Exibir menu principal
         printf("Menu:\n");
-        printf("1. CriaÁ„o de Cadastro\n");
+        printf("1. Cria√ß√£o de Cadastro\n");
         printf("2. Match\n");
         printf("3. Busca\n");
-        printf("Escolha a opÁ„o (ou qualquer outra tecla para sair): ");
+        printf("Escolha a op√ß√£o (ou qualquer outra tecla para sair): ");
         scanf("%d", &opcao);
 
         switch (opcao) {
             case 1:
-                // CriaÁ„o de Cadastro
+                // Cria√ß√£o de Cadastro
                 do {
                     // Limpar a tela antes de exibir o submenu
                     system("cls || clear");
@@ -210,15 +249,21 @@ int main() {
                     printf("CPF: ");
                     scanf(" %14[^\n]s", novoCadastro.cpf);
 
-                    // Verificar se o usu·rio digitou '0' para cancelar
+                    // Verificar se o usu√°rio digitou '0' para cancelar
                     if (strcmp(novoCadastro.cpf, "0") == 0) {
                         printf("Cadastro cancelado.\n");
                         break;
                     }
 
-                    // Verificar se o CPF j· existe
+                    // Verificar se o CPF j√° existe
                     if (cpfExistente(arquivo, novoCadastro.cpf)) {
-                        printf("CPF j· existe. Por favor, escolha outro CPF.\n");
+                        printf("CPF j√° existe. Por favor, escolha outro CPF.\n");
+                        // Adicionar delay de 1 segundo
+                        #ifdef _WIN32
+                        Sleep(2000);  // Em milissegundos
+                        #else
+                        sleep(2);  // Em segundos
+                        #endif
                     } else {
                         printf("Primeiro Nome: ");
                         scanf(" %49[^\n]s", novoCadastro.primeiroNome);
@@ -226,71 +271,59 @@ int main() {
                         scanf(" %49[^\n]s", novoCadastro.restoNome);
                         printf("Apelido: ");
                         scanf(" %49[^\n]s", novoCadastro.apelido);
-                        printf("GÍnero: ");
+                        printf("G√™nero: ");
                         scanf(" %19[^\n]s", novoCadastro.genero);
                         printf("Sexualidade: ");
                         scanf(" %19[^\n]s", novoCadastro.sexualidade);
                         printf("E-mail: ");
                         scanf(" %49[^\n]s", novoCadastro.email);
-                        printf("Redes Sociais: ");
-                        scanf(" %49[^\n]s", novoCadastro.redesSociais);
                         printf("Telefone: ");
                         scanf(" %14[^\n]s", novoCadastro.telefone);
                         printf("Sobre: ");
                         scanf(" %199[^\n]s", novoCadastro.sobre);
-                        printf("Identidade de GÍnero: ");
-                        scanf(" %49[^\n]s", novoCadastro.identidadeGenero);
+                        printf("Personalidade: ");
+                        scanf(" %49[^\n]s", novoCadastro.personalidade); // Novo campo "Personalidade"
 
                         adicionarCadastro(arquivo, novoCadastro);
                         break;
                     }
-                } while (1); // Loop atÈ que um CPF ˙nico seja fornecido ou o usu·rio cancele
+                } while (1); // Loop at√© que um CPF √∫nico seja fornecido ou o usu√°rio cancele
 
                 break;
 
             case 2:
-                // Match (pode ser implementado conforme necess·rio)
-                printf("OpÁ„o 'Match' selecionada.\n");
+                // Match (pode ser implementado conforme necess√°rio)
+                printf("Op√ß√£o 'Match' selecionada.\n");
                 break;
 
             case 3:
                 // Busca por CPF e exibe todos os cadastros encontrados
-                printf("Buscar cadastro por CPF (Digite '0' para cancelar):\n");
-                printf("CPF: ");
-                scanf(" %14[^\n]s", novoCadastro.cpf);
-
-                // Verificar se o usu·rio digitou '0' para cancelar
-                if (strcmp(novoCadastro.cpf, "0") == 0) {
-                    printf("Busca cancelada.\n");
-                    break;
-                }
-
-                buscarCadastro(arquivo, novoCadastro.cpf);
-
-                // Menu apÛs a busca
-                int opcaoBusca;
                 do {
-                    printf("Menu apÛs Busca:\n");
+                    printf("\nBuscar cadastro por CPF (Digite '0' para cancelar):\n");
+                    printf("CPF: ");
+                    scanf(" %14[^\n]s", novoCadastro.cpf);
+
+                    // Verificar se o usu√°rio digitou '0' para cancelar
+                    if (strcmp(novoCadastro.cpf, "0") == 0) {
+                        printf("Busca cancelada.\n");
+                        break;
+                    }
+
+                    buscarCadastro(arquivo, novoCadastro.cpf);
+
+                    // Menu ap√≥s a busca
+                    int opcaoBusca;
+                    printf("\nMenu ap√≥s Busca:\n");
                     printf("1. Realizar outra busca\n");
                     printf("2. Editar cadastro\n");
-                    printf("3. Voltar\n");
-                    printf("Escolha a opÁ„o: ");
+                    printf("3. Excluir cadastro\n");
+                    printf("4. Voltar\n");
+                    printf("Escolha a op√ß√£o: ");
                     scanf("%d", &opcaoBusca);
 
                     switch (opcaoBusca) {
                         case 1:
-                            // Realizar outra busca
-                            printf("Buscar cadastro por CPF (Digite '0' para cancelar):\n");
-                            printf("CPF: ");
-                            scanf(" %14[^\n]s", novoCadastro.cpf);
-
-                            // Verificar se o usu·rio digitou '0' para cancelar
-                            if (strcmp(novoCadastro.cpf, "0") == 0) {
-                                printf("Busca cancelada.\n");
-                                break;
-                            }
-
-                            buscarCadastro(arquivo, novoCadastro.cpf);
+                            // Realizar outra busca (continua o loop)
                             break;
 
                         case 2:
@@ -299,13 +332,35 @@ int main() {
                             break;
 
                         case 3:
-                            // Voltar para o menu principal
+                            // Excluir cadastro
+                            printf("\nExcluir cadastro por CPF (Digite '0' para cancelar):\n");
+                            printf("CPF: ");
+                            scanf(" %14[^\n]s", novoCadastro.cpf);
+
+                            // Verificar se o usu√°rio digitou '0' para cancelar
+                            if (strcmp(novoCadastro.cpf, "0") == 0) {
+                                printf("Exclus√£o cancelada.\n");
+                                break;
+                            }
+
+                            // Verificar se o CPF existe antes de tentar excluir
+                            if (cpfExistente(arquivo, novoCadastro.cpf)) {
+                                excluirCadastro(arquivo, novoCadastro.cpf);
+                            } else {
+                                printf("Cadastro com CPF %s n√£o encontrado.\n", novoCadastro.cpf);
+                            }
+
+                            break;
+
+                        case 4:
+                            // Voltar para o menu principal (sai do loop)
                             break;
 
                         default:
-                            printf("OpÁ„o inv·lida. Tente novamente.\n");
+                            printf("Saindo do programa.\n");
+                            break;
                     }
-                } while (opcaoBusca != 3);
+                } while (1);
 
                 break;
 
@@ -320,3 +375,4 @@ int main() {
 
     return 0;
 }
+
