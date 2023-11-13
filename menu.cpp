@@ -105,7 +105,7 @@ int main(){
 		gets(cadastro.email);
 		fflush(stdin);
 									
-		printf("\n DATA DE NASCIMENTO: \n");
+		printf("\n DATA DE NASCIMENTO: \n\n ");
 		printf("\n DIA: ");
 		scanf("%d", &cadastro.dia);
 		printf("\n MES: ");
@@ -135,21 +135,28 @@ int main(){
 		printf("\n\t*                                                           *");
 		printf("\n\t*************************************************************");
 		
+		fflush(stdin);
+		
 		printf("\n APELIDO: ");
 		gets(cadastro.descricao.apelido);
+		fflush(stdin);
 		
 		printf("\n GENERO F/M: ");
 		scanf("%c", &cadastro.descricao.genero);
+		fflush(stdin);
 		
 		printf("\n SEXUALIDADE: ");
 		gets(cadastro.descricao.sexualidade);
+		fflush(stdin);
 		
 		printf("\n GOSTOS GERAIS: ");
-		printf("\n EX: futebol, jogos, esportes, livros, e etc...");
+		printf("\n EX: futebol, jogos, esportes, livros, e etc...\n");
 		gets(cadastro.descricao.gosto_gerais);
+		fflush(stdin);
 		
 		printf("\n DESCRICAO: ");
 		gets(cadastro.descricao.descricao);
+		fflush(stdin);
 }
 
 void exibirPerfil(struct cadastro cadastro)
