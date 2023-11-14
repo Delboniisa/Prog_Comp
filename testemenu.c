@@ -3,6 +3,7 @@
 #include <string.h>
 #include <windows.h>
 
+
 #define ESC 27
 
 struct endereco {
@@ -36,6 +37,7 @@ void matchCadastro(FILE *arquivo, const struct cadastro *cadastro);
 void aguardarEnterLimparTela();
 void salvarCadastro(FILE *arquivo, struct cadastro novoCadastro);
 int verificarCompatibilidade(const struct cadastro *perfil1, const struct cadastro *perfil2);
+void animar();
 
 int main() {
     struct cadastro minhaStruct;
@@ -49,7 +51,9 @@ int main() {
     }
 
     int opcaoMenuPrincipal = 1;
-
+	
+	animar();
+	
     while (opcaoMenuPrincipal != ESC) {
         printf("\n\n\n");
         printf("\n\t*************************************************************");
@@ -387,7 +391,7 @@ int verificarCompatibilidade( const struct cadastro *perfil1, const struct cadas
 	int diferencaAbsoluta;
 	
     // Criterio 2: Idade (comparando a diferenca de idade)
-    int diferencaIdade =  diferencaAbsoluta(perfil1->ano, perfil2->ano);
+    int diferencaIdade =  adiferencaAbsoluta(perfil1->ano, perfil2->ano);
     int idadeCompativel = diferencaIdade <= 5;  // Exemplo: considerando compativel se a diferenca for menor ou igual a 5 anos
 
     // Criterio 3: Localizacao (comparando estado e cidade)
@@ -448,4 +452,76 @@ void matchCadastro(FILE *arquivo, const struct cadastro *cadastro) {
 
 void salvarCadastro(FILE *arquivo, const struct cadastro cadastro) {
     // Implementar a logica para salvar o cadastro no arquivo aqui :)
+}
+void animar(){
+
+	for(i=0; i<2; i++){
+		
+		 
+			printf("\n         *###**  *####*            ####*  **###*            *###**   *####        ");
+			printf("\n       @################@       @######@#######@#@@       @#@####@@@#######@      ");
+			printf("\n       @###############@@       @@###############@@       @################@      ");
+			printf("\n         @######@@####@           @############@@           @@#########@#@@       ");
+			printf("\n          @#########@              #@#########@              @@######@@@@         ");
+			printf("\n             @@###@                   @@##@@                    @@##@@            ");
+			printf("\n               @@                       @@                        @@            \n");
+			
+			sleep(1);
+			system("cls");
+			
+			printf("\n      *###*   *####*           *###**  *####*            *###*  **###*         \n");
+			printf("     @################@       @################@       @@      @@       @@       \n");
+			printf("     @###############@@       @###############@@       @@               @@       \n");
+			printf("       @######@@####@           @######@@####@          @              @@        \n");
+			printf("        @#########@              @#########@             #@          @@          \n");
+			printf("           @@###@                   @@###@                  @@,     @        	 \n");
+			printf("             @@                       @@                        @@@              \n");
+			
+			sleep(1);
+			system("cls");
+			
+			printf("\n       **###   *####*           *###*  **###*             *###*  **###*         \n");
+			printf("     @################@       @@      @@       @@       @@      @@       @@      \n");
+			printf("     @###############@@       @@               @@       @@               @@      \n");
+			printf("       @######@@####@          @              @@         @              @@       \n");
+			printf("         @#########@             #@          @@           #@          @@         \n");
+			printf("            @@###@                 @@,     @                @@,      @           \n");
+			printf("              @@                      @@@                       @@@              \n");
+		
+			sleep(1);
+			system("cls");
+			
+			printf("\n        *###*  **###*             *###*  **###*             *###**  *####*        \n");
+			printf("      @@      @@       @@       @@      @@       @@       @@      @@       @@      \n");
+			printf("      @@               @@       @@               @@       @@               @@      \n");
+			printf("       @              @@         @              @@         @              @@       \n");
+			printf("        #@          @@            #@          @@             #@          @@        \n");
+			printf("          @@,      @                @@,      @                 @@,     @           \n");
+			printf("              @@@                       @@@                       @@@              \n");
+			
+			sleep(1);
+			system("cls");
+			 
+			printf("\n      **###**  *####*           *####*  **###**          *####*  **###**        \n");
+			printf("     @################@       @@      @@       @@       @@      @@       @@      \n");
+			printf("     @###############@@       @@               @@       @@               @@      \n");
+			printf("       @######@@####@          @              @@         @              @@       \n");
+			printf("         @#########@             #@          @@           #@          @@         \n");
+			printf("            @@###@                 @@,     @                @@,      @           \n");
+			printf("              @@                      @@@                       @@@              \n");
+		
+			sleep(1);
+			system("cls");
+			
+			printf("\n      **###**  *####*          **###**  *####*          *####*  **###**        \n");
+			printf("     @################@       @################@       @@      @@       @@       \n");
+			printf("     @###############@@       @###############@@       @@               @@       \n");
+			printf("       @######@@####@           @######@@####@          @              @@        \n");
+			printf("        @#########@              @#########@             #@          @@          \n");
+			printf("           @@###@                   @@###@                  @@,      @        	 \n");
+			printf("             @@                       @@                        @@@              \n");
+			
+			sleep(1);
+			system("cls");
+		}
 }
