@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+#include <conio.h>
+#undef sleep
 
 
 #define ESC 27
 
 struct endereco {
     char rua[50], estado[30], bairro[50], cidade[50];
-    int numero, cep;
+    int numero, cep[11];
 };
 
 struct descricao {
@@ -28,21 +30,21 @@ struct cadastro {
     int dia, mes, ano;
 };
 
-// Prototipo das funcoes
-int diferencaAbsoluta(int a, int b);
+// Colocar os prototipos das funcoes!!
+int diferencaAbsoluta(int ano1, int ano2);
 void cadastrarNovoPerfil(struct cadastro *cadastro);
-void exibirPerfil(const struct cadastro *cadastro);
-void alterarCadastro(struct cadastro *cadastro);
+void exibirPerfil(FILE *arquivo);
+void alterarCadastro(FILE *arquivo, struct cadastro *cadastro);
 void matchCadastro(FILE *arquivo, const struct cadastro *cadastro);
 void aguardarEnterLimparTela();
 void salvarCadastro(FILE *arquivo, struct cadastro novoCadastro);
-int verificarCompatibilidade(const struct cadastro *perfil1, const struct cadastro *perfil2);
 void animar();
+int buscarPerfilPorCPF(const struct cadastro *usuarioAtual, struct cadastro *perfilEncontrado, FILE *arquivo);
 
 int main() {
     struct cadastro minhaStruct;
 
-    FILE *arquivo;
+    FILE *arquivo; 
     arquivo = fopen("cadastros.txt", "a+"); // Modo "a+" para leitura e escrita, criando se nao existir
 
     if (arquivo == NULL) {
@@ -57,7 +59,7 @@ int main() {
     while (opcaoMenuPrincipal != ESC) {
         printf("\n\n\n");
         printf("\n\t*************************************************************");
-        printf("\n\t*                          NOME                             *");
+        printf("\n\t*                         CINDER                            *");
         printf("\n\t*                                                           *");
         printf("\n\t*                  *  MENU PRINCIPAL  *                     *");
         printf("\n\t*                                                           *");
@@ -68,7 +70,6 @@ int main() {
         printf("\n\t*                     2 - EXIBIR PERFIL:                    *");
         printf("\n\t*                     3 - ALTERAR:                          *");
         printf("\n\t*                     4 - MATCH:                            *");
-        printf("\n\t*          	       ESC - SAIR DO PROGRAMA                   *");
         printf("\n\t*                                                           *");
         printf("\n\t*************************************************************");
         printf("\n\n\n");
@@ -77,52 +78,62 @@ int main() {
         fflush(stdin);
         printf("\n");
         system("cls");
-
-        switch (opcaoMenuPrincipal) {
-            case 1:
-                cadastrarNovoPerfil(&minhaStruct);
-                salvarCadastro(arquivo, minhaStruct);
-                break;
-            case 2:
-                exibirPerfil(&minhaStruct);
-                break;
-            case 3:
-                alterarCadastro(&minhaStruct);
-                break;
-            case 4:
-                matchCadastro(arquivo, &minhaStruct);
-                break;
-        }
+        
+		
+	        switch (opcaoMenuPrincipal) {
+	            case 1:
+	                cadastrarNovoPerfil(&minhaStruct); 
+	                salvarCadastro(arquivo, minhaStruct);
+	                break;
+	            case 2:
+	                exibirPerfil(arquivo);
+	                break;
+	            case 3:
+	                alterarCadastro(arquivo, &minhaStruct);
+	                break;
+	            case 4:
+	                matchCadastro(arquivo, &minhaStruct);
+	                break;
+	        }
+	    
     }
 
-    fclose(arquivo); // Fechar o arquivo apos a utilizacao
+    fclose(arquivo); // Para fecharmos o arquivo apos a utilizacao
 
     return 0;
 }
 void cadastrarNovoPerfil(struct cadastro *cadastro) {
+	
+	
     printf("\n\n\n");
     printf("\n\t*************************************************************");
-    printf("\n\t*                          NOME                             *");
+    printf("\n\t*                         CINDER                            *");
     printf("\n\t*                                                           *");
-    printf("\n\t*                  *  NOVO CADASTRO  *                      *");
+    printf("\n\t*                   *  NOVO CADASTRO  *                     *");
     printf("\n\t*                                                           *");
-    printf("\n\t*                       ESC-VOLTAR                          *");
     printf("\n\t*                                                           *");
     printf("\n\t*************************************************************");
 
     printf("\n NOME COMPLETO: ");
     fgets(cadastro->nome, sizeof(cadastro->nome), stdin);
     cadastro->nome[strcspn(cadastro->nome, "\n")] = '\0';
+    fflush(stdin);
 
     printf("\n EMAIL: ");
     fgets(cadastro->email, sizeof(cadastro->email), stdin);
     cadastro->email[strcspn(cadastro->email, "\n")] = '\0';
+    fflush(stdin);
 
-    printf("\n DATA DE NASCIMENTO: \n\n ");
+
+    printf("\n DATA DE NASCIMENTO: \n ");
     printf("\n DIA: ");
     scanf("%d", &cadastro->dia);
+    fflush(stdin);
+
     printf("\n MES: ");
     scanf("%d", &cadastro->mes);
+    fflush(stdin);
+
     printf("\n ANO: ");
     scanf("%d", &cadastro->ano);
     fflush(stdin);
@@ -130,22 +141,24 @@ void cadastrarNovoPerfil(struct cadastro *cadastro) {
     printf("\n TELEFONE: \n");
     printf("\n DDD: ");
     scanf("%d", &cadastro->numero.ddd);
+    fflush(stdin);
+
     printf("\n NUMERO: ");
     scanf("%d", &cadastro->numero.numero);
     fflush(stdin);
 
     printf("\n CPF: ");
     scanf("%ld", &cadastro->cpf);
+    fflush(stdin);
 
     system("cls");
 
     printf("\n\n\n");
     printf("\n\t*************************************************************");
-    printf("\n\t*                          NOME                             *");
+    printf("\n\t*                         CINDER                            *");
     printf("\n\t*                                                           *");
     printf("\n\t*                    *  NOVO PERFIL  *                      *");
     printf("\n\t*                                                           *");
-    printf("\n\t*                        ESC-VOLTAR                         *");
     printf("\n\t*                                                           *");
     printf("\n\t*************************************************************");
 
@@ -154,6 +167,7 @@ void cadastrarNovoPerfil(struct cadastro *cadastro) {
     printf("\n APELIDO: ");
     fgets(cadastro->descricao.apelido, sizeof(cadastro->descricao.apelido), stdin);
     cadastro->descricao.apelido[strcspn(cadastro->descricao.apelido, "\n")] = '\0';
+    fflush(stdin);
 
     printf("\n GENERO F/M: ");
     scanf(" %c", &cadastro->descricao.genero);
@@ -162,48 +176,104 @@ void cadastrarNovoPerfil(struct cadastro *cadastro) {
     printf("\n SEXUALIDADE: ");
     fgets(cadastro->descricao.sexualidade, sizeof(cadastro->descricao.sexualidade), stdin);
     cadastro->descricao.sexualidade[strcspn(cadastro->descricao.sexualidade, "\n")] = '\0';
+    fflush(stdin);
 
     printf("\n GOSTOS GERAIS: ");
     printf("\n EX: futebol, jogos, esportes, livros, e etc...\n");
     fgets(cadastro->descricao.gosto_gerais, sizeof(cadastro->descricao.gosto_gerais), stdin);
     cadastro->descricao.gosto_gerais[strcspn(cadastro->descricao.gosto_gerais, "\n")] = '\0';
+    fflush(stdin);
 
     printf("\n DESCRICAO: ");
     fgets(cadastro->descricao.descricao, sizeof(cadastro->descricao.descricao), stdin);
     cadastro->descricao.descricao[strcspn(cadastro->descricao.descricao, "\n")] = '\0';
+    fflush(stdin);
+
 }
 
 // Funcao para exibir o perfil
-void exibirPerfil(const struct cadastro *cadastro) {
-    printf("\n NOME: %s", cadastro->nome);
-    printf("\n EMAIL: %s", cadastro->email);
-    printf("\n DATA DE NASCIMENTO: %d / %d / %d", cadastro->dia, cadastro->mes, cadastro->ano);
-    printf("\n TELEFONE: %d  %d", cadastro->numero.ddd, cadastro->numero.numero);
-    printf("\n CPF: %ld", cadastro->cpf);
+void exibirPerfil(FILE *arquivo) {
+    long int cpf;
+    
+    printf("\n\n\n");
+    printf("\n\t*************************************************************");
+    printf("\n\t*                         CINDER                            *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*          * DIGITE O CPF PARA ENCONTRAR O PERFIL *         *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*************************************************************");
+    printf("\n \n");
+    scanf("%ld", &cpf);
+
+    struct cadastro perfilEncontrado;
+
+    rewind(arquivo);
+
+    while (fread(&perfilEncontrado, sizeof(struct cadastro), 1, arquivo) == 1) {
+    	
+        if (perfilEncontrado.cpf == cpf) {
+        	
+	printf("\n\n\n");
+    printf("\n\t*************************************************************");
+    printf("\n\t*                         CINDER                            *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                 * CADASTRO ENCONTRADO *                   *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*************************************************************");
+    
+    // Para exibir informacoees do cadastro
+    
+	printf("\n NOME: %s", perfilEncontrado.nome);
+    printf("\n EMAIL: %s", perfilEncontrado.email);
+	printf("\n DATA DE NASCIMENTO: %d / %d / %d", perfilEncontrado.dia, perfilEncontrado.mes, perfilEncontrado.ano);
+	printf("\n TELEFONE: %d  %d", perfilEncontrado.numero.ddd, perfilEncontrado.numero.numero);
+    printf("\n CPF: %ld", perfilEncontrado.cpf);
+
+	Sleep(10);
 
     printf("\n\n\n");
     printf("\n\t*************************************************************");
-    printf("\n\t*                          NOME                             *");
+    printf("\n\t*                         CINDER                            *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
-    printf("\n\t*                       * PERFIL *                          *");
+    printf("\n\t*                  * PERFIL ENCONTRADO *                    *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
     printf("\n\t*************************************************************");
 
-    printf("\n APELIDO: %s", cadastro->descricao.apelido);
-    printf("\n GENERO: %c", cadastro->descricao.genero);
-    printf("\n SEXUALIDADE: %s", cadastro->descricao.sexualidade);
-    printf("\n GOSTOS GERAIS: %s", cadastro->descricao.gosto_gerais);
-    printf("\n DESCRICAO: %s", cadastro->descricao.descricao);
+    // Para exibir informações do perfil
+    
+    printf("\n APELIDO: %s", perfilEncontrado.descricao.apelido);
+    printf("\n GENERO: %c", perfilEncontrado.descricao.genero);
+    printf("\n SEXUALIDADE: %s", perfilEncontrado.descricao.sexualidade);
+	printf("\n GOSTOS GERAIS: %s", perfilEncontrado.descricao.gosto_gerais);
+    printf("\n DESCRICAO: %s", perfilEncontrado.descricao.descricao);
+
+        return;  
+        }
+    }
+
+    printf("\n\n\n");
+    printf("\n\t*************************************************************");
+    printf("\n\t*                         CINDER                            *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                * PERFIL NAO ENCONTRADO *                  *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*                                                           *");
+    printf("\n\t*************************************************************");
 }
 
-void alterarCadastro(struct cadastro *cadastro) {
+void alterarCadastro(FILE *arquivo, struct cadastro *cadastro) {
     int menuAlteracao, menuAltCadastro, menuAltPerfil, menu3;
 
     printf("\n\n\n");
     printf("\n\t*************************************************************");
-    printf("\n\t*                          NOME                             *");
+    printf("\n\t*                         CINDER                            *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
     printf("\n\t*                      * ALTERACAO *                        *");
@@ -214,14 +284,17 @@ void alterarCadastro(struct cadastro *cadastro) {
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
     printf("\n\t*************************************************************");
-    scanf("%d", &menuAlteracao);
+    printf("\n \n ");
+    scanf(" %d", &menuAlteracao);
+    
+    system("cls");
 
     if (menuAlteracao == 1 || menuAlteracao == 2 || menuAlteracao == ESC) {
         switch (menuAlteracao) {
             case 1:
                 printf("\n\n\n");
                 printf("\n\t*************************************************************");
-                printf("\n\t*                          NOME                             *");
+                printf("\n\t*                        CINDER                             *");
                 printf("\n\t*                                                           *");
                 printf("\n\t*                                                           *");
                 printf("\n\t*               * ALTERACAO DE CADASTRO *                   *");
@@ -229,7 +302,7 @@ void alterarCadastro(struct cadastro *cadastro) {
                 printf("\n\t*                                                           *");
                 printf("\n\t*************************************************************");
 
-                sleep(3);
+            	Sleep(2);
                 system("cls");
 
                 printf("\n QUAL DOS ITENS DESEJA ALTERAR: ");
@@ -238,8 +311,10 @@ void alterarCadastro(struct cadastro *cadastro) {
                 printf("\n 3 - DATA DE NASCIMENTO: %d / %d / %d", cadastro->dia, cadastro->mes, cadastro->ano);
                 printf("\n 4 - TELEFONE: %d  %d", cadastro->numero.ddd, cadastro->numero.numero);
                 printf("\n 5 - CPF: %ld", cadastro->cpf);
-
+				
+				printf("\n \n");
                 scanf("%d", &menuAltCadastro);
+                
 
                 switch (menuAltCadastro) {
                     case 1:
@@ -279,14 +354,14 @@ void alterarCadastro(struct cadastro *cadastro) {
 
                     default:
                         printf("\n NUMERO INVALIDO!\n");
-                        return alterarCadastro(cadastro);
+                        return alterarCadastro(arquivo, cadastro);
                 }
                 break;
 
             case 2:
                 printf("\n\n\n");
                 printf("\n\t*************************************************************");
-                printf("\n\t*                          NOME                             *");
+                printf("\n\t*                         CINDER                            *");
                 printf("\n\t*                                                           *");
                 printf("\n\t*                                                           *");
                 printf("\n\t*                 * ALTERACAO DE PERFIL *                   *");
@@ -294,7 +369,7 @@ void alterarCadastro(struct cadastro *cadastro) {
                 printf("\n\t*                                                           *");
                 printf("\n\t*************************************************************");
 
-                sleep(3);
+                Sleep(2);
                 system("cls");
 
                 printf("\n QUAL DOS ITENS DESEJA ALTERAR: ");
@@ -303,7 +378,8 @@ void alterarCadastro(struct cadastro *cadastro) {
                 printf("\n 3 - SEXUALIDADE: %s ", cadastro->descricao.sexualidade);
                 printf("\n 4 - GOSTOS GERAIS: %s ", cadastro->descricao.gosto_gerais);
                 printf("\n 5 - DESCRICAO: %s ", cadastro->descricao.descricao);
-
+				
+				printf("\n \n");
                 scanf("%d", &menuAltPerfil);
 
                 switch (menuAltPerfil) {
@@ -340,17 +416,17 @@ void alterarCadastro(struct cadastro *cadastro) {
 
                     default:
                         printf("\n NUMERO INVALIDO!\n");
-                        return alterarCadastro(cadastro);
+                        return alterarCadastro(arquivo, cadastro);
                 }
                 break;
-
+			
             case ESC:
                 return;
         }
 
         printf("\n\n\n");
         printf("\n\t*************************************************************");
-        printf("\n\t*                          NOME                             *");
+        printf("\n\t*                         CINDER                            *");
         printf("\n\t*                                                           *");
         printf("\n\t*                                                           *");
         printf("\n\t*                 * CADASTRO ALTERADO! *                    *");
@@ -358,12 +434,12 @@ void alterarCadastro(struct cadastro *cadastro) {
         printf("\n\t*                                                           *");
         printf("\n\t*************************************************************");
 
-        sleep(2);
+        Sleep(2);
         system("cls");
 
         printf("\n\n\n");
         printf("\n\t*************************************************************");
-        printf("\n\t*                          NOME                             *");
+        printf("\n\t*                          CINDER                           *");
         printf("\n\t*                                                           *");
         printf("\n\t*                                                           *");
         printf("\n\t*                  *  DESEJA ALTERAR MAIS? *                *");
@@ -371,95 +447,98 @@ void alterarCadastro(struct cadastro *cadastro) {
         printf("\n\t*                        1 - SIM                            *");
         printf("\n\t*                        2 - NAO                            *");
         printf("\n\t*                                                           *");
-        printf("\n\t*************************************************************");
-        scanf("%d", &menu3);
+        printf("\n\t*************************************************************\n\n");
+        printf("\n \n");
+		scanf(" %d", &menu3);
+        getchar();
+        
         if (menu3 == 2) {
             return;
         } else {
-            return alterarCadastro(cadastro);
+            return alterarCadastro(arquivo,cadastro);
         }
     } else {
         printf("\n NUMERO INVALIDO!\n");
-        return alterarCadastro(cadastro);
+        return alterarCadastro(arquivo,cadastro);
     }
 }
 
-// Funcao para verificar se dois perfis sao compativeis
-int verificarCompatibilidade( const struct cadastro *perfil1, const struct cadastro *perfil2) {
-    // Criterio 1: Interesses Gerais (comparando gosto_gerais)
-    int interessesCompativeis = strcmp(perfil1->descricao.gosto_gerais, perfil2->descricao.gosto_gerais) == 0;
-	int diferencaAbsoluta;
-	
-    // Criterio 2: Idade (comparando a diferenca de idade)
-    int diferencaIdade =  adiferencaAbsoluta(perfil1->ano, perfil2->ano);
-    int idadeCompativel = diferencaIdade <= 5;  // Exemplo: considerando compativel se a diferenca for menor ou igual a 5 anos
-
-    // Criterio 3: Localizacao (comparando estado e cidade)
-    int localizacaoCompativel = strcmp(perfil1->endereco.estado, perfil2->endereco.estado) == 0 &&
-                                strcmp(perfil1->endereco.cidade, perfil2->endereco.cidade) == 0;
-
-    // Avaliacao geral de compatibilidade
-    return interessesCompativeis && idadeCompativel && localizacaoCompativel;
-}
-
-// Funcao para realizar o match de perfis
-void matchCadastro(FILE *arquivo, const struct cadastro *cadastro) {
-  //  struct cadastro cadastro;
-
+void matchCadastro(FILE *arquivo, const struct cadastro *usuarioAtual) {
     rewind(arquivo);
-
-    printf("\n\n\n");
+	 
+	printf("\n\n\n");
     printf("\n\t*************************************************************");
-    printf("\n\t*                          NOME                             *");
+    printf("\n\t*                         CINDER                            *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
     printf("\n\t*                   * MATCH DE PERFIS *                     *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
     printf("\n\t*************************************************************");
+	 
+    struct cadastro perfilExistente;
 
-    int perfilCompativelEncontrado = 0;
+    while (fread(&perfilExistente, sizeof(struct cadastro), 1, arquivo) == 1) {
+        
+        exibirPerfil(arquivo);
 
-    while (fread(&cadastro, sizeof(struct cadastro), 1, arquivo) == 1) {
-        if (cadastro->cpf != cadastro->cpf) {
-            if (verificarCompatibilidade(cadastro, cadastro)) {
-                perfilCompativelEncontrado = 1;
-                printf("\n\n PERFIL COMPATÃVEL ENCONTRADO!");
-                exibirPerfil(cadastro);
-            }
+        int escolha;
+        printf("\n\n Escolha uma opcao:\n");
+        printf("1 - Match\n");
+        printf("2 - Proximo perfil\n");
+        scanf("%d", &escolha);
+
+        if (escolha == 1) {
+        	
+        printf("\n\n\n");
+	    printf("\n\t*************************************************************");
+	    printf("\n\t*                         CINDER                            *");
+	    printf("\n\t*                                                           *");
+	    printf("\n\t*                                                           *");
+	    printf("\n\t*                   * VOCÊ DEU MATCH! *                     *");
+	    printf("\n\t*                                                           *");
+	    printf("\n\t*                                                           *");
+	    printf("\n\t*************************************************************");
+
+	    Sleep(2);
+	    system("cls");
+	    
+        } else if (escolha == 2) {
+            printf("Proximo perfil.\n");
+        } else {
+            printf("Opcao invalida. Proximo perfil.\n");
+        }
+
+    
+    }
+}
+
+void salvarCadastro(FILE *arquivo, struct cadastro novoCadastro) {
+    fseek(arquivo, 0, SEEK_END); 
+    fwrite(&novoCadastro, sizeof(struct cadastro), 1, arquivo); 
+    fclose(arquivo);
+}
+
+int buscarPerfilPorCPF(const struct cadastro *usuarioAtual, struct cadastro *perfilEncontrado, FILE *arquivo) {
+    rewind(arquivo);
+
+    while (fread(perfilEncontrado, sizeof(struct cadastro), 1, arquivo) == 1) {
+        if (perfilEncontrado->cpf == usuarioAtual->cpf) {
+            return 1;  //se encontrar
         }
     }
 
-    if (!perfilCompativelEncontrado) {
-        printf("\n\n Nenhum perfil compatÃ­vel encontrado.");
-    }
-
-    fclose(arquivo);
-
-    printf("\n\n\n");
-    printf("\n\t*************************************************************");
-    printf("\n\t*                          NOME                             *");
-    printf("\n\t*                                                           *");
-    printf("\n\t*                                                           *");
-    printf("\n\t*              * MATCH DE PERFIS CONCLUIDO! *               *");
-    printf("\n\t*                                                           *");
-    printf("\n\t*                                                           *");
-    printf("\n\t*************************************************************");
-
-    sleep(2);
-    system("cls");
+    return 0;  //se não encontrar
 }
 
-void salvarCadastro(FILE *arquivo, const struct cadastro cadastro) {
-    // Implementar a logica para salvar o cadastro no arquivo aqui :)
-}
 void animar(){
 
-	for(i=0; i<2; i++){
-		
-		 
-			printf("\n \n \n \n");
-		printf("\n                        *###**  *####*            ####*  **###*            *###**   *####        ");
+	int i;
+	
+	for(i=0; i<1; i++){
+	
+	 	printf("\n \n \n \n");
+		printf("\n                          ###*  ####               ####*  *###              ###*   *####        ");
 		printf("\n                      @################@       @######@#######@#@@       @#@####@@@#######@      ");
 		printf("\n                      @###############@@       @@###############@@       @################@      ");
 		printf("\n                        @######@@####@           @############@@           @@#########@#@@       ");
@@ -467,10 +546,11 @@ void animar(){
 		printf("\n                            @@###@                   @@##@@                    @@##@@            ");
 		printf("\n                              @@                       @@                        @@            \n");
 		
-		sleep(1);
+		Sleep(1000);
 		system("cls");
 		
-		printf("\n                      *###*   *####*           *###**  *####*            *###*  **###*         \n");
+		printf("\n \n \n \n");
+		printf("\n                        ###   ####              ###*  ####                ###  *###         \n");
 		printf("                     @################@       @################@       @@      @@       @@       \n");
 		printf("                     @###############@@       @###############@@       @@               @@       \n");
 		printf("                       @######@@####@           @######@@####@          @              @@        \n");
@@ -478,10 +558,11 @@ void animar(){
 		printf("                            @@###@                   @@###@                 @@,     @        	 \n");
 		printf("                             @@                       @@                       @@@               \n");
 		 
-		sleep(1);
+		Sleep(1000);
 		system("cls");
 		
-		printf("\n                      **###   *####*           *###*  **###*             *###*  **###*         \n");
+		printf("\n \n \n \n");
+		printf("\n                       *###   *####               ###  *###                  ###  *###         \n");
 		printf("                     @################@       @@      @@       @@       @@      @@       @@      \n");
 		printf("                     @###############@@       @@               @@       @@               @@      \n");
 		printf("                       @######@@####@          @              @@         @              @@       \n");
@@ -489,10 +570,11 @@ void animar(){
 		printf("                            @@###@                 @@,     @                @@,      @           \n");
 		printf("                              @@                      @@@                       @@@              \n");
 	
-		sleep(1);
+		Sleep(1000);
 		system("cls");
 		
-		printf("\n                     *###*  **###*             *###*  **###*             *###**  *####*        \n");
+		printf("\n \n \n \n");
+		printf("\n                       ###  *###                  ###  *###                ###*  ####        \n");
 		printf("                    @@      @@       @@       @@      @@       @@       @@      @@       @@      \n");
 		printf("                    @@               @@       @@               @@       @@               @@      \n");
 		printf("                     @              @@         @              @@         @              @@       \n");
@@ -500,10 +582,11 @@ void animar(){
 		printf("                        @@,      @                @@,      @                 @@,     @           \n");
 		printf("                            @@@                       @@@                       @@@              \n");
 		
-		sleep(1);
+		Sleep(1000);
 		system("cls");
 		 
-		printf("\n                     **###**  *####*           *####*  **###**          *####*  **###**        \n");
+		printf("\n \n \n \n");
+		printf("\n                      *###*  ####               ####  *###*                ####  *###*        \n");
 		printf("                     @################@       @@      @@       @@       @@      @@       @@      \n");
 		printf("                     @###############@@       @@               @@       @@               @@      \n");
 		printf("                       @######@@####@          @              @@         @              @@       \n");
@@ -511,18 +594,19 @@ void animar(){
 		printf("                            @@###@                 @@,     @                @@,      @           \n");
 		printf("                              @@                      @@@                       @@@              \n");
 	
-		sleep(1);
+		Sleep(1000);
 		system("cls");
 		
-		printf("\n                      **###**  *####*          **###**  *####*          *####*  **###**        \n");
+		printf("\n \n \n \n");
+		printf("\n                      *###*  ####               *###*  ####               ####  *###*        \n");
 		printf("                     @################@       @################@       @@      @@       @@       \n");
 		printf("                     @###############@@       @###############@@       @@               @@       \n");
 		printf("                       @######@@####@           @######@@####@          @              @@        \n");
 		printf("                        @#########@              @#########@             #@          @@          \n");
-		printf("                            @@###@                   @@###@                  @@,      @        	 \n");
-		printf("                              @@                       @@                        @@@              \n");
+		printf("                           @@###@                   @@###@                 @@,      @        	 \n");
+		printf("                              @@                       @@                      @@@               \n");
 		
-		sleep(1);
+		Sleep(1000);
 		system("cls");
-		}
+	}
 }
