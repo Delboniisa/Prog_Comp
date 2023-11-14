@@ -1,5 +1,3 @@
-//422|error: incompatible type for argument 1 of 'exibirPerfil'
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,7 +27,7 @@ struct cadastro {
     int dia, mes, ano;
 };
 
-// Protótipo das funções
+// Prototipo das funcoes
 int diferencaAbsoluta(int a, int b);
 void cadastrarNovoPerfil(struct cadastro *cadastro);
 void exibirPerfil(const struct cadastro *cadastro);
@@ -37,12 +35,13 @@ void alterarCadastro(struct cadastro *cadastro);
 void matchCadastro(FILE *arquivo, const struct cadastro *cadastro);
 void aguardarEnterLimparTela();
 void salvarCadastro(FILE *arquivo, struct cadastro novoCadastro);
+int verificarCompatibilidade(const struct cadastro *perfil1, const struct cadastro *perfil2);
 
 int main() {
     struct cadastro minhaStruct;
 
     FILE *arquivo;
-    arquivo = fopen("cadastros.txt", "a+"); // Modo "a+" para leitura e escrita, criando se não existir
+    arquivo = fopen("cadastros.txt", "a+"); // Modo "a+" para leitura e escrita, criando se nao existir
 
     if (arquivo == NULL) {
         printf("Erro ao abrir o arquivo.\n");
@@ -92,7 +91,7 @@ int main() {
         }
     }
 
-    fclose(arquivo); // Fechar o arquivo após a utilização
+    fclose(arquivo); // Fechar o arquivo apos a utilizacao
 
     return 0;
 }
@@ -170,7 +169,7 @@ void cadastrarNovoPerfil(struct cadastro *cadastro) {
     cadastro->descricao.descricao[strcspn(cadastro->descricao.descricao, "\n")] = '\0';
 }
 
-// Função para exibir o perfil
+// Funcao para exibir o perfil
 void exibirPerfil(const struct cadastro *cadastro) {
     printf("\n NOME: %s", cadastro->nome);
     printf("\n EMAIL: %s", cadastro->email);
@@ -381,26 +380,27 @@ void alterarCadastro(struct cadastro *cadastro) {
     }
 }
 
-// Função para verificar se dois perfis são compatíveis
-int verificarCompatibilidade(const struct cadastro *perfil1, const struct cadastro *perfil2) {
-    // Critério 1: Interesses Gerais (comparando gosto_gerais)
+// Funcao para verificar se dois perfis sao compativeis
+int verificarCompatibilidade( const struct cadastro *perfil1, const struct cadastro *perfil2) {
+    // Criterio 1: Interesses Gerais (comparando gosto_gerais)
     int interessesCompativeis = strcmp(perfil1->descricao.gosto_gerais, perfil2->descricao.gosto_gerais) == 0;
+	int diferencaAbsoluta;
+	
+    // Criterio 2: Idade (comparando a diferenca de idade)
+    int diferencaIdade =  diferencaAbsoluta(perfil1->ano, perfil2->ano);
+    int idadeCompativel = diferencaIdade <= 5;  // Exemplo: considerando compativel se a diferenca for menor ou igual a 5 anos
 
-    // Critério 2: Idade (comparando a diferença de idade)
-    int diferencaIdade = diferencaAbsoluta(perfil1->ano, perfil2->ano);
-    int idadeCompativel = diferencaIdade <= 5;  // Exemplo: considerando compatível se a diferença for menor ou igual a 5 anos
-
-    // Critério 3: Localização (comparando estado e cidade)
+    // Criterio 3: Localizacao (comparando estado e cidade)
     int localizacaoCompativel = strcmp(perfil1->endereco.estado, perfil2->endereco.estado) == 0 &&
                                 strcmp(perfil1->endereco.cidade, perfil2->endereco.cidade) == 0;
 
-    // Avaliação geral de compatibilidade
+    // Avaliacao geral de compatibilidade
     return interessesCompativeis && idadeCompativel && localizacaoCompativel;
 }
 
-// Função para realizar o match de perfis
+// Funcao para realizar o match de perfis
 void matchCadastro(FILE *arquivo, const struct cadastro *cadastro) {
-    struct cadastro perfilAtual;
+  //  struct cadastro cadastro;
 
     rewind(arquivo);
 
@@ -416,18 +416,18 @@ void matchCadastro(FILE *arquivo, const struct cadastro *cadastro) {
 
     int perfilCompativelEncontrado = 0;
 
-    while (fread(&perfilAtual, sizeof(struct cadastro), 1, arquivo) == 1) {
-        if (perfilAtual.cpf != cadastro->cpf) {
-            if (verificarCompatibilidade(cadastro, &perfilAtual)) {
+    while (fread(&cadastro, sizeof(struct cadastro), 1, arquivo) == 1) {
+        if (cadastro->cpf != cadastro->cpf) {
+            if (verificarCompatibilidade(cadastro, cadastro)) {
                 perfilCompativelEncontrado = 1;
-                printf("\n\n PERFIL COMPATÍVEL ENCONTRADO!");
-                exibirPerfil(perfilAtual);
+                printf("\n\n PERFIL COMPATÃVEL ENCONTRADO!");
+                exibirPerfil(cadastro);
             }
         }
     }
 
     if (!perfilCompativelEncontrado) {
-        printf("\n\n Nenhum perfil compatível encontrado.");
+        printf("\n\n Nenhum perfil compatÃ­vel encontrado.");
     }
 
     fclose(arquivo);
@@ -437,7 +437,7 @@ void matchCadastro(FILE *arquivo, const struct cadastro *cadastro) {
     printf("\n\t*                          NOME                             *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
-    printf("\n\t*              * MATCH DE PERFIS CONCLUÍDO! *               *");
+    printf("\n\t*              * MATCH DE PERFIS CONCLUIDO! *               *");
     printf("\n\t*                                                           *");
     printf("\n\t*                                                           *");
     printf("\n\t*************************************************************");
@@ -447,5 +447,5 @@ void matchCadastro(FILE *arquivo, const struct cadastro *cadastro) {
 }
 
 void salvarCadastro(FILE *arquivo, const struct cadastro cadastro) {
-    // Implemente a lógica para salvar o cadastro no arquivo aqui
+    // Implementar a logica para salvar o cadastro no arquivo aqui :)
 }
