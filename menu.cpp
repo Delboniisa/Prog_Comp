@@ -105,7 +105,7 @@ int main(){
 		gets(cadastro.email);
 		fflush(stdin);
 									
-		printf("\n DATA DE NASCIMENTO: \n\n ");
+		printf("\n DATA DE NASCIMENTO: \n");
 		printf("\n DIA: ");
 		scanf("%d", &cadastro.dia);
 		printf("\n MES: ");
