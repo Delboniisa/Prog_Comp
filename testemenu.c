@@ -1,3 +1,5 @@
+//422|error: incompatible type for argument 1 of 'exibirPerfil'
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
