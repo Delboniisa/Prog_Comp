@@ -93,3 +93,48 @@ void listarUsuarios(const char *usuarios) {
 
     fclose(arquivo);
 }
+
+void match(const char *usuarios) {
+
+
+}
+
+int main() {
+    FILE *arquivo = fopen("usuarios.txt", "a+");
+    int escolha;
+    char nome[50];
+
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return 1;
+    }
+
+    do {
+        printf("\n1. Cadastrar usuário\n2. Listar usuários\n3. Remover usuário\n4. Sair\nEscolha: ");
+        scanf("%d", &escolha);
+
+        switch (escolha) {
+            case 1:
+                cadastrarUsuario(arquivo);
+                break;
+            case 2:
+                printf("Usuários cadastrados:\n");
+                listarUsuarios(arquivo);
+                break;
+            case 3:
+                printf("Nome do usuário a ser removido: ");
+                scanf("%s", nome);
+                printf("Usuário removido com sucesso!\n");
+                break;
+            case 4:
+                printf("Saindo do programa.\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (escolha != 4);
+
+    fclose(arquivo);
+
+    return 0;
+}
